@@ -1,17 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 
-router.get('/', (req, res, next) => {
-    res.status(200).json({
-        message: 'Hello Blogs GET'
-    });
-});
+let blogController = require('../controllers/blogController');
 
-router.post('/', (req, res, next) => {
-    res.status(200).json({
-        message: 'Hello Blogs POST'
-    });
-});
+router.get('/', blogController.getBlog);
+
+router.post('/', blogController.postBlog);
+
+router.get('/:blogId', blogController.blogId);
+
+router.patch('/:blogId', blogController.patchBlogId);
+
+router.delete('/:blogId', blogController.deleteBlogId);
 
 module.exports = router;
 
