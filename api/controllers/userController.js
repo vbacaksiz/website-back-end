@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-
 const User = require('../models/user/signup');
 const { validationResult } = require('express-validator');
 
@@ -26,10 +25,10 @@ exports.userSignUp = (req, res, next) => {
                         email: req.body.email,
                         password: hash
                     });
-                    if (!errors.isEmpty()){
+                    if (!errors.isEmpty()) {
                         console.log(errors);
                         return res.status(409).json({
-                            errors:errors. array()
+                            errors: errors.array()
                         })
                     } else {
                         user.save().then(result => {
