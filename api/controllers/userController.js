@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const User = require('../models/user');
+
+const User = require('../models/user/signup');
+const { validationResult } = require('express-validator');
 
 exports.userSignUp = (req, res, next) => {
+    const errors = validationResult(req);
     User.find({ email: req.body.email }).exec().then(user => {
         if (user.length >= 1) {
             return res.status(409).json({
@@ -12,7 +15,7 @@ exports.userSignUp = (req, res, next) => {
         } else {
             bcrypt.hash(req.body.password, 10, (err, hash) => {
                 if (err) {
-                    return res.status(500).json({
+                    return res.status(409).json({
                         error: err
                     });
                 } else {
@@ -23,28 +26,20 @@ exports.userSignUp = (req, res, next) => {
                         email: req.body.email,
                         password: hash
                     });
-                    if( req.body.firstName == null ){
-                        console.log(err);
-                        res.status(500).json({
-                            error: err,
-                            message: "First Name Required"
-                        });
-                    }
-                    else if( req.body.lastName == null ){
-                        console.log(err);
-                        res.status(500).json({
-                            error: err,
-                            message: "Last Name Required"
-                        });
-                    }else {
+                    if (!errors.isEmpty()){
+                        console.log(errors);
+                        return res.status(409).json({
+                            errors:errors. array()
+                        })
+                    } else {
                         user.save().then(result => {
                             console.log(result);
-                            res.status(200).json({
+                            res.status(201).json({
                                 message: 'user created'
                             });
                         }).catch(err => {
                             console.log(err);
-                            res.status(500).json({
+                            res.status(409).json({
                                 error: err
                             });
                         });
