@@ -1,14 +1,21 @@
 const { check, validationResult } = require('express-validator');
 
 exports.signUpMiddleware = [check('email', 'Email Error').
-isEmail().
-normalizeEmail(),
+    isEmail().
+    normalizeEmail(),
 check('password', 'Password Error').
-isLength({ min: 6 }),
+    isLength({ min: 7 }),
 check('firstName', 'First Name Required')
-.not()
-.isEmpty(),
+    .not()
+    .isEmpty(),
 check('lastName', 'Last Name Required')
-.not()
-.isEmpty(),
+    .not()
+    .isEmpty(),
+];
+
+exports.loginMiddleware = [check('email', 'Email Error').
+    isEmail().
+    normalizeEmail(),
+check('password', 'Password Error').
+    isLength({ min: 7 }),
 ];
