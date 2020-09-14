@@ -13,26 +13,33 @@ exports.postBlog = (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         blogTitle: req.body.blogTitle,
         blogSubtitle: req.body.blogSubtitle,
+        blogImg: req.body.blogImg,
         blogContent: req.body.blogContent,
         createdDate: Date.now()
     });
     blog.save().then(result => {
         console.log(result);
-    }).catch(err => console.log(err));
-    res.status(201).json({
-        message: 'Hello Blogs POST',
-        createdBlog: blog,
+        res.status(201).json({
+            message: 'Hello Blogs POST',
+            createdBlog: blog,
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(406).json({
+            error: err
+        });
     });
+
 };
 
 exports.blogId = (req, res, next) => {
     const id = req.params.blogId;
-    if(id === 'special'){
+    if (id === 'special') {
         res.status(200).json({
             message: 'You discovered the special ID',
             id: id
         });
-    }else{
+    } else {
         res.status(200).json({
             message: 'You passed an ID'
         });

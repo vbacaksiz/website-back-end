@@ -6,7 +6,7 @@ let blogController = require('../controllers/blogController');
 
 router.get('/', blogController.getBlog);
 
-router.post('/', blogController.postBlog);
+router.post('/create-blog', blogController.postBlog);
 
 router.get('/:blogId', blogController.blogId);
 
