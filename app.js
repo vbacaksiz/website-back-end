@@ -13,8 +13,8 @@ mongoose.connect('mongodb+srv://volkan:'+ process.env.MONGO_ATLAS_PW + '@blogsit
     useCreateIndex: true
 });
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '1mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: '1mb', extended: true}));
 
 app.use(morgan('dev'));
 
