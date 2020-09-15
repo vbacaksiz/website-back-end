@@ -2,11 +2,14 @@ const mongoose = require('mongoose');
 
 const Blog = require('../models/blog');
 
-exports.getBlog = (req, res, next) => {
-    res.status(200).json({
-        message: 'Hello Blogs GET'
-    });
-};
+exports.getBlogs = (req, res) => {
+    Blog.find().then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        console.log(err);
+        res.send(err);
+    })
+}
 
 exports.postBlog = (req, res, next) => {
     const blog = new Blog({

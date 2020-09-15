@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 let blogController = require('../controllers/blogController');
 
-router.get('/', blogController.getBlog);
+router.get('/', blogController.getBlogs);
 
 router.post('/create-blog', blogController.postBlog);
 
