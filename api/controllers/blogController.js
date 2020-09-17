@@ -25,6 +25,21 @@ exports.getBlogs = async(req, res) => {
     })
 }
 
+exports.blogId = async(req, res, next) => {
+    Blog.findById(req.params.blogId).then(async(result) => {
+        
+        User.find({ _id: result.createdUser }).populate('user').exec((err, user) => {
+            result.blogDetail.push(user[0].firstName);
+            result.blogDetail.push(user[0].lastName);
+        })
+        await waitFor(100);
+        res.json(result);
+    }).catch((err) => {
+        console.log(err);
+        res.send(err);
+    })
+};
+
 exports.postBlog = (req, res, next) => {
     User.find({ email: req.body.email }).exec().then(user => {
         const blog = new Blog({
@@ -58,20 +73,6 @@ exports.postBlog = (req, res, next) => {
         });
     });
 }
-
-exports.blogId = (req, res, next) => {
-    const id = req.params.blogId;
-    if (id === 'special') {
-        res.status(200).json({
-            message: 'You discovered the special ID',
-            id: id
-        });
-    } else {
-        res.status(200).json({
-            message: 'You passed an ID'
-        });
-    }
-};
 
 exports.patchBlogId = (req, res, next) => {
     res.status(200).json({
