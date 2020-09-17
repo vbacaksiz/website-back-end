@@ -4,12 +4,24 @@ var bodyParser = require('body-parser');
 const User = require('../models/user/signup');
 const Blog = require('../models/blog');
 
-exports.getBlogs = (req, res) => {
-    Blog.find().then((result) => {
+async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+    }
+}
+
+const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
+
+exports.getBlogs = async(req, res) => {
+    Blog.find().then(async(result) => {
+        asyncForEach(result, (blog) => {
+            User.find({ _id: blog.createdUser }).populate('user').exec((err, user) => {
+                blog.blogDetail.push(user[0].firstName);
+                blog.blogDetail.push(user[0].lastName);
+            })
+        })
+        await waitFor(500);
         res.json(result);
-    }).catch((err) => {
-        console.log(err);
-        res.send(err);
     })
 }
 
@@ -22,9 +34,10 @@ exports.postBlog = (req, res, next) => {
             blogImg: req.body.blogImg,
             blogContent: req.body.blogContent,
             createdDate: Date.now(),
+            createdUser: user[0]._id
         });
-        blog.createdUser.push(user[0]._id, user[0].firstName, user[0].lastName);
         blog.save().then(result => {
+            console.log(blog.createdUser);
             user[0].blog.push(result._id);
             user[0].save();
             console.log(user[0].blog);
