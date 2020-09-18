@@ -20,7 +20,7 @@ exports.getBlogs = async(req, res) => {
                 blog.blogDetail.push(user[0].lastName);
             })
         })
-        await waitFor(500);
+        await waitFor(100);
         res.json(result);
     })
 }
