@@ -20,14 +20,13 @@ exports.getBlogs = async(req, res) => {
                 blog.blogDetail.push(user[0].lastName);
             })
         })
-        await waitFor(100);
+        await waitFor(200);
         res.json(result);
     })
 }
 
 exports.blogId = async(req, res, next) => {
-    Blog.findById(req.params.blogId).then(async(result) => {
-        
+    Blog.findById(req.params.blogId).then(async(result) => {   
         User.find({ _id: result.createdUser }).populate('user').exec((err, user) => {
             result.blogDetail.push(user[0].firstName);
             result.blogDetail.push(user[0].lastName);
@@ -52,10 +51,8 @@ exports.postBlog = (req, res, next) => {
             createdUser: user[0]._id
         });
         blog.save().then(result => {
-            console.log(blog.createdUser);
             user[0].blog.push(result._id);
             user[0].save();
-            console.log(user[0].blog);
             res.status(201).json({
                 message: 'Hello Blogs POST',
                 createdBlog: blog,
@@ -80,8 +77,23 @@ exports.patchBlogId = (req, res, next) => {
     });
 };
 
-exports.deleteBlogId = (req, res, next) => {
-    res.status(200).json({
-        message: 'Deleted blog!'
-    });
+exports.deleteBlogId = async(req, res, next) => {
+    Blog.findByIdAndDelete(req.params.blogId).then(async(result) => {
+        User.findByIdAndUpdate(result.createdUser).then(async(user) => {
+            let i=0;
+            asyncForEach(user.blog, (blog) => {
+                if(blog == req.params.blogId){
+                    user.blog.splice(i,i);
+                    return;
+                }
+                i++;
+            })
+            await waitFor(100);
+            user.save();
+            console.log(user.blog);
+        });
+        res.json(result);
+    }).catch(err => {
+        console.log(err);
+    })
 };

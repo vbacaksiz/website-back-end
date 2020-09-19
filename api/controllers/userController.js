@@ -78,7 +78,8 @@ exports.userLogin = (req, res, next) => {
                     token: token,
                     firstName: user[0].firstName,
                     lastName: user[0].lastName,
-                    id: user[0]._id
+                    id: user[0]._id,
+                    blogs: user[0].blog
                 });
             }
             res.status(401).json({
