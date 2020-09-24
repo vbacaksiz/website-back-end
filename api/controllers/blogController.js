@@ -71,19 +71,13 @@ exports.postBlog = (req, res, next) => {
     });
 }
 
-exports.patchBlogId = (req, res, next) => {
-    res.status(200).json({
-        message: 'Updated blog!'
-    });
-};
-
 exports.deleteBlogId = async(req, res, next) => {
     Blog.findByIdAndDelete(req.params.blogId).then(async(result) => {
         User.findByIdAndUpdate(result.createdUser).then(async(user) => {
             let i=0;
             asyncForEach(user.blog, (blog) => {
                 if(blog == req.params.blogId){
-                    user.blog.splice(i,i);
+                    user.blog.splice(i,1);
                     return;
                 }
                 i++;
@@ -97,3 +91,18 @@ exports.deleteBlogId = async(req, res, next) => {
         console.log(err);
     })
 };
+
+exports.blogUpdate = (req, res, next) => {
+    Blog.findByIdAndUpdate(req.params.blogId).then(result => {
+        result.blogTitle = req.body.blogTitle;
+        result.blogSubtitle = req.body.blogSubtitle;
+        result.blogImg = req.body.blogImg;
+        result.blogContent = req.body.blogContent;
+        result.save();
+        res.status(201).json({
+            message: 'Blog Updated Successfully',
+        });
+    }).catch(err => {
+        console.log(err);
+    })
+}

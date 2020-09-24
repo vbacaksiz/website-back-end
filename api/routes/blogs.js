@@ -10,7 +10,7 @@ router.post('/create-blog', blogController.postBlog);
 
 router.get('/:blogId', blogController.blogId);
 
-router.patch('/:blogId', blogController.patchBlogId);
+router.post('/:blogId', blogController.blogUpdate);
 
 router.delete('/:blogId', blogController.deleteBlogId);
 
