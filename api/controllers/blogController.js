@@ -20,7 +20,7 @@ exports.getBlogs = async(req, res) => {
                 blog.blogDetail.push(user[0].lastName);
             })
         })
-        await waitFor(200);
+        await waitFor(1000);
         res.json(result);
     })
 }
@@ -31,7 +31,7 @@ exports.blogId = async(req, res, next) => {
             result.blogDetail.push(user[0].firstName);
             result.blogDetail.push(user[0].lastName);
         })
-        await waitFor(100);
+        await waitFor(500);
         res.json(result);
     }).catch((err) => {
         console.log(err);
@@ -56,6 +56,7 @@ exports.postBlog = (req, res, next) => {
             res.status(201).json({
                 message: 'Hello Blogs POST',
                 createdBlog: blog,
+                id: result._id
             });
         }).catch(err => {
             console.log(err);
